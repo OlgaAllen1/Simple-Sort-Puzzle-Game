@@ -59,8 +59,16 @@ public:
 				return false;
 			};
 		};
-		return true;
+		return filled == 4 || filled == 0;
 	};
+	int getFilled() {
+		return filled;
+	}
+	
+	char* getContents() {
+		return contents;
+	};
+	
 	void setLabel(int label) {
 		this->label = label;
 	};
@@ -73,7 +81,7 @@ public:
 			cout << "The destination is filled" << endl;
 			return false;
 		}
-		else if (this->contents[filled - 1] != destination.contents[destination.filled - 1]) {
+		else if (destination.filled > 0 && this->contents[filled - 1] != destination.contents[destination.filled - 1]) {
 			cout << "Contents do not match" << endl;
 			return false;
 		}
@@ -104,20 +112,21 @@ public:
 
 int main()
 {
-	Vial vial1;
-	vial1.add('a');
-	vial1.add('a');
-	vial1.add('a');
-	vial1.add('a');
-	vial1.add('e');
-	vial1.setLabel(5);
-	vial1.display();
-	cout << vial1.isComplete();
-
-	Vial vial2;
-	vial2.add('a');
-	vial1.transfer(vial2);
-	vial1.display();
-	vial2.display();
+	cout << "Simple Sort Puzzle Game" << endl;
+	srand(time(0));
+	const int numberOfVials = 6;
+	Vial vials[numberOfVials];
+	char contents[] = {
+		'a','b','c','d'
+	};
+	for (int i = 0; i < 4; i++) {
+		for (char item : contents) {
+			int vialIndex;
+			do {
+				vialIndex = rand() % 4;
+			} while (vials[vialIndex].getFilled() > i);
+			vials[vialIndex].add(item);
+		}
+	}
 }
 
