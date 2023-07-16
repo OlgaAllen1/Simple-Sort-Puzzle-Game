@@ -1,5 +1,7 @@
 using namespace std;
 #include <iostream>
+#include <string>
+
 //Class: data member, constructors, methods
 class Vial {
 private:
@@ -110,12 +112,40 @@ public:
 	};
 };
 
+void displayVials(Vial* vials, int numberOfVials) {
+	for (int i = 0; i < numberOfVials; i++) {
+		vials[i].display();
+	}
+
+}
+
+bool isGameComplete(Vial* vials, int numberOfVials) {
+	for (int i = 0; i < numberOfVials;i++) {
+		if (!vials[i].isComplete()) {
+			return false;
+		}
+		
+	}
+	return true;
+}
+
+bool isStringDigits(string input) {
+	for (char symbol : input) {
+		if (!isdigit(symbol)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 int main()
 {
 	cout << "Simple Sort Puzzle Game" << endl;
 	srand(time(0));
 	const int numberOfVials = 6;
 	Vial vials[numberOfVials];
+	int numberOfTransfers = 0;
+	string source, destination;
 	char contents[] = {
 		'a','b','c','d'
 	};
@@ -128,5 +158,40 @@ int main()
 			vials[vialIndex].add(item);
 		}
 	}
+	for (int i = 0; i < numberOfVials; i++) {
+		vials[i].setLabel(i+1);
+	}
+	while (!isGameComplete(vials, numberOfVials)) {
+		cout << endl;
+		displayVials(vials, numberOfVials);
+		cout << "Completed Transfers: " << numberOfTransfers << endl;
+		cout << "Source (only numbers 1-6): ";
+		cin >> source;
+		cout << "Destination (only numbers 1-6): ";
+		cin >> destination;
+		if (!isStringDigits(source)|| !isStringDigits(destination)) {
+			cout << "I said numbers only!" << endl;
+			continue;
+		}
+		int s = stoi(source);
+		int d = stoi(destination);
+
+		s--;
+		d--;
+		if (s<0 || s>=numberOfVials || d< 0 || d>=numberOfVials) {
+			cout << "Please enter a valid source and destination." << endl; 
+			continue;
+		}
+
+		bool transferSuccess = vials[s].transfer(vials[d]);
+		if (!transferSuccess) {
+			cout << "This transfer is not possible." << endl;
+		}
+		else {
+			numberOfTransfers++;
+		}
+	}
+	displayVials(vials, numberOfVials);
+	cout << "Congrats! Your vials are sorted!" << endl;
 }
 
